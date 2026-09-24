@@ -1,0 +1,652 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600&family=Caveat:wght@600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Mobile App Container */
+#app {
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  max-height: 850px;
+  background-color: #fdf6f5; /* Updated for new theme */
+  position: relative;
+  overflow: hidden;
+  /* Graph paper grid effect */
+  background-image: 
+    linear-gradient(#f49eb333 1px, transparent 1px),
+    linear-gradient(90deg, #f49eb333 1px, transparent 1px);
+  background-size: 25px 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.scene {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  overflow-y: auto;
+}
+
+.scene.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  color: #692127;
+  text-align: center;
+}
+
+p {
+  color: #692127;
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* Standard Button */
+.btn {
+  background: #fcf8f5;
+  border: 2px dashed #692127;
+  border-radius: 30px;
+  padding: 12px 30px;
+  color: #692127;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 20px auto;
+  display: block;
+  transition: all 0.2s;
+}
+.btn:active { transform: scale(0.95); background: #f49eb333; }
+
+.back-btn {
+  position: absolute;
+  top: 20px; left: 20px;
+  border: 1px dashed #692127;
+  background: transparent;
+  border-radius: 15px;
+  padding: 5px 15px;
+  cursor: pointer;
+  color: #692127;
+  z-index: 50; /* Z-index added to prevent overlapping issues */
+}
+
+/* Paper note effect */
+.paper-note {
+  background: #fff3e6;
+  padding: 30px 20px;
+  box-shadow: 2px 5px 15px rgba(0,0,0,0.05);
+  margin: 40px 10px 10px 10px;
+  position: relative;
+}
+.paper-note p { text-align: left; line-height: 1.6; }
+
+/* Polaroid with Image Fix */
+.polaroid {
+  background: #fff;
+  padding: 10px 10px 30px 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+}
+.polaroid-img {
+  width: 100%; 
+  height: 250px;
+  background: #ddd; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  color: #888;
+  overflow: hidden;
+}
+.polaroid-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* This forces the image to crop perfectly instead of stretching */
+}
+
+/* Music Player */
+.vinyl {
+  width: 200px; height: 200px;
+  background: #111;
+  border-radius: 50%;
+  margin: 40px auto;
+  display: flex; justify-content: center; align-items: center;
+  border: 5px solid #222;
+  transition: transform 0.1s linear;
+}
+.vinyl.playing { animation: spin 4s linear infinite; }
+.vinyl-center {
+  width: 60px; height: 60px;
+  background: #f49eb3; border-radius: 50%;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* Game Area */
+#game-area {
+  position: relative;
+  flex-grow: 1;
+  overflow: hidden;
+  border: 2px solid #f49eb3;
+  border-radius: 10px;
+  margin-top: 10px;
+  background: #fff;
+}
+.falling-heart {
+  position: absolute;
+  font-size: 24px;
+  cursor: pointer;
+  user-select: none;
+}
+
+
+/* =========================================
+   SCENE 1 REDESIGN MATCHING SCREENSHOT
+   ========================================= */
+
+/* Top Left Blob Shape */
+.decor-top-blob {
+  position: absolute;
+  top: -120px;
+  left: -120px;
+  width: 400px;
+  height: 400px;
+  background: #f7aabf;
+  border-radius: 40% 50% 60% 40% / 50% 40% 60% 50%;
+  z-index: 0;
+  box-shadow: inset -20px -20px 0px 0px #f095ab;
+  transform: rotate(-15deg);
+}
+
+/* Tape */
+.tape-decor {
+  position: absolute;
+  top: 140px;
+  right: 30px;
+  background: #f09ea9;
+  color: white;
+  font-family: 'Caveat', cursive;
+  font-size: 16px;
+  padding: 4px 25px;
+  transform: rotate(12deg);
+  box-shadow: 1px 2px 5px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+.tape-decor::before, .tape-decor::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background: inherit;
+}
+.tape-decor::before { left: -2px; border-left: 2px dotted #fdf6f5; }
+.tape-decor::after { right: -2px; border-right: 2px dotted #fdf6f5; }
+
+/* Floating Icons */
+.floating-star, .floating-heart {
+  position: absolute;
+  color: #db93a1;
+  font-size: 18px;
+  z-index: 1;
+}
+
+/* Content Layout */
+.content-container {
+  position: absolute;
+  top: 35%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+#scene-1 h1 {
+  font-size: 42px;
+  color: #832738;
+  margin-bottom: 0;
+  letter-spacing: 0.5px;
+}
+
+.title-underline {
+  width: 200px;
+  height: 25px;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+#scene-1 .subtitle {
+  color: #a88a8d;
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Specific Open Button */
+.btn-open {
+  background-color: #fae4dc !important;
+  border: 2px dashed #832738 !important;
+  color: #832738 !important;
+  padding: 10px 45px !important;
+  border-radius: 25px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  box-shadow: 0px 4px 10px rgba(131, 39, 56, 0.1);
+}
+
+/* Bottom Illustration (Bunny & Flowers) */
+.bottom-illustration {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 10px;
+  z-index: 10;
+}
+
+.speech-bubble {
+  position: absolute;
+  top: 10px;
+  right: 25%;
+  background: #fdf6f5;
+  border: 1.5px dashed #db93a1;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-family: 'Caveat', cursive;
+  color: #832738;
+  font-size: 14px;
+  z-index: 5;
+}
+.speech-bubble::after {
+  content: ''; position: absolute;
+  bottom: -6px; left: 20%;
+  width: 10px; height: 10px;
+  background: #fdf6f5;
+  border-right: 1.5px dashed #db93a1;
+  border-bottom: 1.5px dashed #db93a1;
+  transform: rotate(45deg);
+}
+
+/* Pure CSS Bunny Creation */
+.css-bunny { position: relative; width: 80px; height: 110px; display: flex; flex-direction: column; align-items: center; z-index: 5; }
+.css-bunny .ear { position: absolute; top: -30px; width: 20px; height: 50px; background: white; border: 2px solid #222; border-radius: 50% 50% 10% 10%; }
+.css-bunny .ear.left { left: 15px; transform: rotate(-25deg); }
+.css-bunny .ear.right { right: 15px; transform: rotate(25deg); }
+.css-bunny .ear::after { content:''; position:absolute; top: 10px; left: 4px; width: 8px; height: 30px; background: #fca7b8; border-radius: 50%; }
+
+.css-bunny .head { position: relative; width: 70px; height: 60px; background: white; border: 2px solid #222; border-radius: 50% 50% 45% 45%; margin-top: 15px; z-index: 3; }
+.css-bunny .eye { position: absolute; top: 25px; width: 10px; height: 14px; background: #222; border-radius: 50%; }
+.css-bunny .eye.left { left: 15px; }
+.css-bunny .eye.right { right: 15px; }
+.css-bunny .eye::before { content:''; position:absolute; top: -7px; left: -2px; width: 14px; height: 4px; border-top: 2px solid #222; border-radius: 50%; transform: rotate(20deg); }
+.css-bunny .eye.right::before { transform: rotate(-20deg); left: -2px; }
+.css-bunny .eye::after { content:''; position:absolute; top: 2px; left: 2px; width: 4px; height: 5px; background: white; border-radius: 50%; }
+
+.css-bunny .blush { position: absolute; top: 38px; width: 12px; height: 8px; background: #fca7b8; border-radius: 50%; opacity: 0.8; }
+.css-bunny .blush.left { left: 8px; }
+.css-bunny .blush.right { right: 8px; }
+.css-bunny .mouth { position: absolute; top: 43px; left: 50%; transform: translateX(-50%); width: 8px; height: 8px; border-bottom: 2px solid #222; border-radius: 50%; }
+
+.css-bunny .body { width: 50px; height: 35px; background: white; border: 2px solid #222; border-radius: 40% 40% 0 0; border-bottom: none; z-index: 1; margin-top: -10px; position: relative; }
+.css-bunny .paws { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 30px; height: 15px; }
+.css-bunny .paws::before, .css-bunny .paws::after { content:''; position:absolute; bottom:-5px; width: 12px; height: 12px; border: 2px solid #222; border-radius: 50%; background: white; }
+.css-bunny .paws::before { left: -5px; }
+.css-bunny .paws::after { right: -5px; }
+
+/* Background Flowers */
+.flower { position: absolute; z-index: 1; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.05)); }
+.flower.f1 { bottom: -15px; left: -10px; font-size: 60px; }
+.flower.f2 { bottom: 10px; left: 20%; font-size: 35px; }
+.flower.f3 { bottom: 15px; right: 20%; font-size: 40px; }
+.flower.f4 { bottom: -20px; right: -15px; font-size: 70px; }
+.flower.f5 { bottom: 5px; left: 5%; font-size: 25px; }
+
+/* /* =========================================
+   SCENE 2: LETTER PAGE STYLES
+   ========================================= */
+
+#scene-2 {
+  background-color: transparent; /* inherits the grid from #app */
+}
+
+/* Wrapper to hold letter, tapes, and bunny together */
+.letter-wrapper {
+  position: relative;
+  margin: 150px auto 10px auto;
+  width: 85%;
+  max-width: 320px;
+  z-index: 10;
+}
+
+/* The Lined Paper */
+.letter-paper {
+  background: #fdf2e3; /* Light yellowish paper color */
+  border-radius: 3px;
+  box-shadow: 2px 4px 15px rgba(0,0,0,0.08);
+  height: 320px; /* Fixed small height for scroll requirement */
+  
+  /* Lined paper effect - precisely calculated */
+  background-image: repeating-linear-gradient(
+    transparent, 
+    transparent 31px, 
+    #eec6cb 31px, 
+    #eec6cb 32px
+  );
+  background-attachment: local; /* So lines scroll WITH the text */
+  padding: 0px 15px 15px 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Inside scrollable container */
+.scrollable-content {
+  height: 100%;
+  overflow-y: auto;
+  padding-right: 5px; /* Tiny space for custom scrollbar */
+}
+
+/* Custom Webkit Scrollbar for cute UI */
+.scrollable-content::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollable-content::-webkit-scrollbar-thumb {
+  background: #db93a1;
+  border-radius: 10px;
+}
+.scrollable-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Lined text adjustments */
+.scrollable-content p {
+  text-align: left;
+  font-family: 'Playfair Display', serif;
+  font-size: 14.5px;
+  line-height: 32px; /* EXACTLY matches the background gradient spacing so text sits on lines */
+  color: #832738;
+  margin-bottom: 0px; 
+}
+
+/* Positioning the Bunny on the letter */
+.letter-bunny {
+  position: absolute;
+  bottom: -45px;
+  right: -25px;
+  z-index: 15;
+}
+
+.letter-bunny .speech-bubble {
+  border-color: #832738; /* Darker outline for clarity */
+}
+.letter-bunny .speech-bubble::after {
+  border-right-color: #832738;
+  border-bottom-color: #832738;
+}
+
+/* Bottom Area matching scene 1 */
+.bottom-action-area {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  padding-bottom: 20px;
+}
+
+/* Ensure Back button looks like screenshot */
+.back-btn {
+  background: #fae4dc;
+  border: 1.5px dashed #832738;
+  color: #832738;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+/* =========================================
+   SCENE 3: TIMELINE STYLES
+   ========================================= */
+
+.timeline-container {
+  position: relative;
+  margin: 10px auto;
+  width: 90%;
+  height: 60vh; 
+  overflow-y: auto;
+  padding-left: 25px; 
+  z-index: 10;
+  padding-bottom: 80px; /* Space for the bottom button */
+  padding-top: 10px;
+}
+
+/* Hide scrollbar for a clean app look */
+.timeline-container::-webkit-scrollbar { 
+  display: none; 
+}
+
+/* The vertical dashed line */
+.timeline-line {
+  position: absolute;
+  left: 12px;
+  top: 15px;
+  bottom: 0;
+  width: 0px;
+  border-left: 1.5px dashed #db93a1;
+  z-index: 1;
+}
+
+/* Individual wrapper for node + card */
+.timeline-item {
+  position: relative;
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+/* The circular point on the timeline */
+.timeline-node {
+  position: absolute;
+  left: -18.5px; /* Precisely centered over the dashed line */
+  top: 15px;
+  width: 12px;
+  height: 12px;
+  background-color: #f7aabf;
+  border: 1.5px solid #832738;
+  border-radius: 50%;
+  z-index: 2;
+  box-shadow: 0 0 0 3px #fdf6f5; /* Creates a cutout effect from the line */
+}
+
+/* The Paper Card */
+.timeline-card {
+  background: #fdf2e3;
+  padding: 12px 15px;
+  border-radius: 2px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.06);
+  position: relative;
+  width: 92%;
+  margin-left: 15px;
+}
+
+.timeline-card p {
+  text-align: left;
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  color: #832738;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.card-icon {
+  font-size: 16px;
+  color: #832738;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+/* Rotation classes to make cards look organically placed */
+.card-tilt-1 { transform: rotate(-1.5deg); }
+.card-tilt-2 { transform: rotate(1deg); }
+.card-tilt-3 { transform: rotate(-0.5deg); }
+
+
+/* =========================================
+   SCENE 4: MEMORIES STYLES
+   ========================================= */
+
+.memories-container {
+  position: relative;
+  margin: 10px auto 0 auto;
+  width: 90%;
+  height: 65vh;
+  overflow-y: auto;
+  padding: 10px 10px 80px 10px;
+  z-index: 10;
+}
+
+/* Hide scrollbar for a seamless look */
+.memories-container::-webkit-scrollbar {
+  display: none;
+}
+
+.polaroid-wrapper {
+  position: relative;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Override existing polaroid style slightly for better fit in this scene */
+#scene-4 .polaroid {
+  width: 85%;
+  padding: 10px 10px 20px 10px;
+  background: #fff;
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.08);
+  margin-bottom: 0;
+}
+
+#scene-4 .polaroid-img {
+  width: 100%;
+  height: 280px; 
+  background: #eee; /* Placeholder color if image is missing */
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#scene-4 .polaroid-caption {
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  color: #832738;
+  margin-top: 15px;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+/* Central tape for polaroids */
+.tape-center {
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(3deg);
+  width: 80px;
+  height: 20px;
+  z-index: 20;
+  color: transparent;
+}
+
+
+/* =========================================
+   SCENE 6 & 7: GAME & FINAL STYLES
+   ========================================= */
+
+/* Stat Pills */
+.stat-pill {
+  background: #fdf2e3;
+  border: 1.5px dashed #db93a1;
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #832738;
+}
+
+/* Game Area Container */
+#game-area {
+  position: relative;
+  width: 85%;
+  height: 55vh;
+  margin: 15px auto 0 auto;
+  background: #fdfdfd;
+  border: 2px dashed #db93a1;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+}
+
+/* Falling Heart CSS Animation */
+.falling-heart-anim {
+  position: absolute;
+  top: -40px;
+  font-size: 30px;
+  cursor: pointer;
+  user-select: none;
+  animation-name: fallDown;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  z-index: 5;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+@keyframes fallDown {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(60vh) rotate(45deg); }
+}
+
+/* Floating +1 Text Effect */
+.floating-plus-one {
+  position: absolute;
+  color: #c95b6c;
+  font-family: 'Caveat', cursive;
+  font-size: 24px;
+  font-weight: bold;
+  pointer-events: none;
+  animation: floatUp 0.8s ease-out forwards;
+  z-index: 10;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+}
+
+/* Specific styling for final scene letter */
+#scene-7 .letter-paper::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  border: 1px dashed #f09ea9;
+  pointer-events: none;
+}
+

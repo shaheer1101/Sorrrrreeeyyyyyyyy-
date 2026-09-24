@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600&family=Caveat:wght@600&display=swap');
+no@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,600&family=Poppins:wght@300;400;600&family=Caveat:wght@600&display=swap');
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -13,32 +13,31 @@ body {
 
 /* Mobile App Container */
 #app {
-  width: 100%;
-  max-width: 400px;
-  height: 100vh;
+  width: 100%; 
+  max-width: 400px; 
+  height: 100dvh; /* Yahan 100dvh karna lazmi hai */
   max-height: 850px;
-  background-color: #fdf6f5; /* Updated for new theme */
-  position: relative;
+  background-color: #fcf8f5; 
+  position: relative; 
   overflow: hidden;
-  /* Graph paper grid effect */
-  background-image: 
-    linear-gradient(#f49eb333 1px, transparent 1px),
-    linear-gradient(90deg, #f49eb333 1px, transparent 1px);
-  background-size: 25px 25px;
+  background-image: linear-gradient(#f49eb322 1px, transparent 1px), linear-gradient(90deg, #f49eb322 1px, transparent 1px);
+  background-size: 30px 30px; 
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+
 .scene {
-  position: absolute;
+  position: absolute; 
   top: 0; left: 0; right: 0; bottom: 0;
-  padding: 20px;
-  display: flex;
+  padding: 20px 20px 80px 20px; /* Bottom padding 80px kar di hai taake button end mein na chhupe */
+  display: flex; 
   flex-direction: column;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  overflow-y: auto;
+  opacity: 0; 
+  pointer-events: none; 
+  transition: opacity 0.5s ease; 
+  overflow-y: auto; /* Is se scene scrollable banega */
 }
+
 
 .scene.active {
   opacity: 1;
@@ -60,19 +59,21 @@ p {
 
 /* Standard Button */
 .btn {
-  background: #fcf8f5;
-  border: 2px dashed #692127;
+  background: #fcf8f5; 
+  border: 2px dashed #692127; 
   border-radius: 30px;
-  padding: 12px 30px;
-  color: #692127;
-  font-family: 'Poppins', sans-serif;
+  padding: 12px 30px; 
+  color: #692127; 
+  font-family: 'Poppins', sans-serif; 
   font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 20px auto;
-  display: block;
+  font-size: 16px; 
+  cursor: pointer; 
+  margin: 20px auto 40px auto; /* Bottom margin barha di hai */
+  display: block; 
   transition: all 0.2s;
+  flex-shrink: 0; /* Yeh line lazmi hai taake button screen se bahar dhakka na khaye */
 }
+
 .btn:active { transform: scale(0.95); background: #f49eb333; }
 
 .back-btn {
